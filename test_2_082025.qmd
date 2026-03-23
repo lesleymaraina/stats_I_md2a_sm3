@@ -1,0 +1,550 @@
+---
+title: "Describing Continuous Data: Center, Spread, Shape, and Interval Probability"
+author: "<br><br><span style='font-size:25px;'><strong>Lesley Chapman Hannah, Ph.D., M.S.</strong></span><br>College of Graduate Studies<br>Northeast Ohio Medical University"
+format:
+  revealjs:
+    theme: simple
+    slide-number: true
+    chalkboard: true
+    transition: fade
+    incremental: false
+    width: 1400
+    height: 900
+execute:
+  echo: true
+  warning: false
+  message: false
+editor: visual
+---
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(scales)
+```
+
+### Workflow for Describing Continuous Data
+
+::: {style="font-size:0.68em"}
+-   describing continuous data before modeling involves a simialr sequence of steps as described for discrete values:
+
+    1.  define the observational unit\
+    2.  identify the variable as continuous\
+    3.  determine summaries of center and spread\
+    4.  evaluate distribution shape across the measurement scale\
+    5.  select visualizations that preserve numerical structure and distribution form
+
+-   numerical summaries and graphical displays with how quantitative values are recorded and help describe what the measurements represent across patients
+:::
+
+------------------------------------------------------------------------
+
+### Workflow and Descriptive Interpretation
+
+::: {style="font-size:0.68em"}
+Each step in the workflow defines a component of continuous measurements described by statistical summaries or plots:
+
+-   `observational unit`: determines what one recorded value represents within the study design\
+-   `continuous variable`: defines the measurement as a quantitative value on a numerical scale\
+-   `summary`: quantifies central tendency and dispersion\
+-   `distribution analysis`: evaluates symmetry, skewness, tails, and concentration across the scale\
+-   `probability representation`: expresses how much of the sample falls within domain-specific ranges\
+-   `visualization`: encodes the distribution in a form that preserves scale, shape, and comparability
+:::
+
+------------------------------------------------------------------------
+
+### Define the Observational Unit
+
+::: {style="font-size:0.67em"}
+Review:
+
+-   observational unit is the entity represented by one row of data
+-   each observational unit contributes one numerical value measured on a quantitative scale
+
+Continuous examples of observational units include:
+
+-   one patient encounter\
+-   one blood draw\
+-   one biopsy specimen\
+-   one laboratory assay result\
+-   one follow-up visit
+:::
+
+------------------------------------------------------------------------
+
+### Identify Continuous Variables
+
+::: {style="font-size:0.67em"}
+After the observational unit is established, continuous variables are recognized by how values are recorded:
+
+-   values are quantitative rather than labels\
+-   values can vary across a numerical scale\
+-   values may take many distinct magnitudes within an interval\
+
+Examples in biomedical data include:
+
+-   cytokine concentration\
+-   blood pressure\
+-   serum creatinine\
+-   tumor size
+
+Descriptive summaries for continuous data help determine:
+
+-   where values are centered\
+-   how widely values vary\
+-   how values are distributed across the scale
+:::
+
+------------------------------------------------------------------------
+
+### Determine the Data Summary for Continuous Variables
+
+::: {style="font-size:0.67em"}
+-   continuous variables are commonly described with summaries of center, spread, and shape :
+
+    -   `mean` : arithmetic center of the sample\
+    -   `median` : middle ordered value\
+    -   `standard deviation` : variability around the sample mean\
+    -   `interquartile range` : spread of the middle 50% of observations\
+    -   `minimum and maximum` : observed range endpoints\
+    -   `quantiles` : positional summaries along the ordered scale
+
+-   no single summary fully describes a continuous distribution
+
+-   valid description combines numerical summaries with plots that show how values occupy the measurement scale
+:::
+
+------------------------------------------------------------------------
+
+### Continuous Distributions Describe Measurement Structure
+
+::: {style="font-size:0.67em"}
+-   continuous distributions describe how measured values are organized across the numerical scale
+
+-   descriptive statistical analysis involves summarizing how values are distributed across observational units without removing the scale on which the measurements were recorded
+
+For continuous variables, descriptive summaries show:
+
+-   **center** → where values tend to cluster along the scale
+
+-   **spread** → how widely values vary around the center
+
+-   **shape** → whether the distribution is symmetric, skewed, heavy-tailed, or multi-peaked
+
+-   **range and tails** → whether observations extend into unusually low or high values
+:::
+
+------------------------------------------------------------------------
+
+### Probability Quantifies Where Continuous Values Fall
+
+::: {style="font-size:0.67em"}
+For continuous data, descriptive probability is often expressed over an interval of values rather than at one exact value
+
+For a sample of size $n$:
+
+$$
+\hat{P}(a \le X \le b) = \frac{\text{number of observations with values between } a \text{ and } b}{n}
+$$
+
+Formula defines the probability that a measured value falls within the interval from $a$ to $b$
+
+Where:
+
+-   $X$ : continuous variable\
+-   $a$ : lower bound of the interval\
+-   $b$ : upper bound of the interval\
+-   $n$ : total number of observations
+:::
+
+------------------------------------------------------------------------
+
+### Visualizations for Continuous Data
+
+::: {style="font-size:0.67em"}
+-   plots are chosen to preserve the numerical scale and reveal how values occupy that scale
+
+Visualizations for continuous variables include:
+
+-   `histogram` : shows how observations accumulate across intervals of the scale\
+-   `density plot` : shows a smooth estimate of distribution shape\
+-   `boxplot` : summarizes median, quartiles, and tail extension\
+:::
+
+------------------------------------------------------------------------
+
+### Data Overview: Continuous Biomarkers in Respiratory Infection
+
+::: {style="font-size:0.67em"}
+**Background**: Suppose we observe inflammatory biomarkers collected from a cohort of patients evaluated for respiratory infection
+
+Each row represents one patient visit, and each variable records a continuous biological measurement:
+
+-   `il6` : interleukin-6 concentration in \[pg/mL\]\
+-   `tnf_alpha` : tumor necrosis factor-alpha concentration in \[pg/mL\]\
+-   `neutrophils` : neutrophil count in units of \[$10^9$/L\]
+
+Research Question:
+
+> How are these biomarker values distributed across patients, and what do center, spread, and shape indicate about the observed sample?
+:::
+
+------------------------------------------------------------------------
+
+### Simulated Biomarker Dataset
+
+::: {style="font-size:0.64em"}
+-   dataset of 220 patient-level observations, where each row corresponds to a single clinical visit and each column represents a continuous biomarker measurement
+
+```{r}
+set.seed(303)
+
+biomarker_df <- tibble(
+  patient_id = sprintf("B%03d", 1:220),
+  il6 = round(rlnorm(220, meanlog = log(12), sdlog = 0.70), 2),
+  tnf_alpha = round(rlnorm(220, meanlog = log(18), sdlog = 0.45), 2),
+  neutrophils = round(rnorm(220, mean = 5.9, sd = 1.3), 2)
+)
+
+biomarker_df |> slice_head(n = 8)
+```
+:::
+
+------------------------------------------------------------------------
+
+### Mean and Median: Two Summaries of Center
+
+::: {style="font-size:0.67em"}
+**Mean** is expressed as:
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+$$
+
+Average of all observed values in the sample
+
+Where:
+
+-   $\bar{x}$ : sample mean\
+-   $n$ : number of observations\
+-   $x_i$ : observed value for the $i$th observational unit\
+-   $\sum_{i=1}^{n} x_i$ : total of all observed values
+
+**Median** : middle value after the sample is ordered from smallest to largest
+
+-   mean uses the magnitude of every value\
+-   median uses the order of values in the sample
+:::
+
+------------------------------------------------------------------------
+
+### Standard Deviation and Interquartile Range
+
+::: {style="font-size:0.67em"}
+**Standard deviation**:
+
+-   measure that captures variability around the mean
+-   summary of dispersion that quantifies how far observations extend from the mean across the entire distribution
+
+$$
+s = \sqrt{ \frac{1}{n - 1} \sum (x_i - \bar{x})^2 }
+$$
+
+Where:
+
+-   $s$ : sample standard deviation\
+-   $x_i$ : observed value for the $i$th observation\
+-   $\bar{x}$ : sample mean\
+-   $(x_i-\bar{x})^2$ : squared deviation from the mean\
+-   $n-1$ : denominator used for the sample-based estimate of variability
+:::
+
+------------------------------------------------------------------------
+
+### Standard Deviation and Interquartile Range
+
+::: {style="font-size:0.67em"}
+**Interquartile Range**:
+
+-   width of the central interval containing the middle 50% of ordered observations
+-   measure of dispersion
+-   summary statistic for skewed variables and data with outliers
+
+$$
+IQR = Q_3 - Q_1
+$$
+
+Where:
+
+-   $Q_1$ : 25th percentile \[value below which 25% of observations fall\]
+-   $Q_3$ : 75th percentile \[value below which 75% of observations fall\]
+:::
+
+------------------------------------------------------------------------
+
+### Numerical Summary for IL-6
+
+::: {style="font-size:0.7em"}
+```{r, echo=FALSE}
+il6_summary <- biomarker_df |>
+  summarise(
+    mean_il6 = mean(il6),
+    median_il6 = median(il6),
+    sd_il6 = sd(il6),
+    iqr_il6 = IQR(il6),
+    q1_il6 = quantile(il6, 0.25),
+    q3_il6 = quantile(il6, 0.75),
+    min_il6 = min(il6),
+    max_il6 = max(il6)
+  )
+
+il6_summary
+```
+
+**Interpretation**
+
+-   `mean_il6` \[14.7\]: average of IL-6 concentrations across all patients
+
+-   `median_il6` \[11.7\]: 50th percentile of the ordered IL-6 values
+
+    -   point at which half of observations fall below and half above
+
+-   `sd_il6` \[10.6\]: quantifies the overall dispersion of IL-6 values around the mean
+
+    -   variability across the full distribution
+
+-   `iqr_il6` \[12.3\]: range spanned by the central 50% of IL-6 values
+
+    -   measure of variability that reflects the spread of the majority of observations
+
+-   `q1_il6` \[7.26\] and `q3_il6` \[19.5\]: 50% of IL-6 values fall between 7.26 and 19.5 pg/mL
+
+    -   interval captures the central concentration range of the sample
+
+-   `min_il6` \[1.77\] and `max_il6` \[71.7\]: lower and upper bounds of IL-6 in the sample
+
+Example: focus on evaluating IL-6
+:::
+
+------------------------------------------------------------------------
+
+### IL-6 Distribution: Histogram
+
+::: {style="font-size:0.67em"}
+```{r, echo=FALSE}
+plot <- ggplot(biomarker_df, aes(x = il6)) +
+  geom_histogram(bins = 24) +
+  labs(
+    title = "Histogram of IL-6 Concentration",
+    x = "IL-6 (pg/mL)",
+    y = "Number of patients"
+  ) + theme_bw()
+
+plot
+```
+
+**Interpretation**
+
+-   right-skewed histogram shows how a continuous biomarker (IL-6 concentration) is distributed across patients
+-   tallest bars indicate the IL-6 concentration range where most patients are observed
+-   bars at high values represent patients with elevated inflammatory response
+-   horizontal spread of the bars shows that IL-6 values range widely
+-   long tail extending to the right indicates right-skewness $\rightarrow$ small number of patients have substantially higher IL-6 levels
+:::
+
+------------------------------------------------------------------------
+
+### IL-6 Distribution : Density Plot
+
+::: {style="font-size:0.64em"}
+```{r, echo = FALSE}
+plot <- ggplot(biomarker_df, aes(x = il6)) +
+  geom_density(linewidth = 1) +
+  labs(
+    title = "Density Plot of IL-6 Concentration",
+    x = "IL-6 (pg/mL)",
+    y = "Density"
+  ) + theme_bw()
+
+plot
+```
+
+**Interpretation**
+
+-   density plot : smooth representation of how IL-6 values are distributed across patient observations
+-   distribution is right-skewed, with most values concentrated around 10–15 pg/mL \[region representing the most common range of observed values\]
+-   curve is right-skewed gradually declines as IL-6 increases, showing that higher concentrations occur less frequently
+-   values span a wide range, extending from low concentrations to substantially elevated values \[above \~50 pg/mL\]
+:::
+
+------------------------------------------------------------------------
+
+### IL-6 Distribution
+
+::: {style="font-size:0.64em"}
+```{r, echo=FALSE}
+plot <- ggplot(biomarker_df, aes(x = il6)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 22) +
+  geom_density(linewidth = 1) +
+  labs(
+    title = "Histogram with Density Overlay for IL-6",
+    x = "IL-6 (pg/mL)",
+    y = "Density"
+  ) + theme_bw()
+
+plot
+```
+
+**Interpretation**
+
+-   bars show how IL-6 observations accumulate across intervals of the measurement scale
+-   density curve traces the smooth distributional shape implied by those observations
+-   agreement between the bars and the curve confirms the main concentration of the sample
+
+Note:
+
+-   `histogram` displays how many observations fall within intervals
+-   `density plot` estimates how probability is distributed across a continuous scale
+:::
+
+------------------------------------------------------------------------
+
+### IL-6: Boxplot
+
+::: {style="font-size:0.64em"}
+```{r}
+ggplot(biomarker_df, aes(y = il6)) +
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of IL-6 Concentration",
+    y = "IL-6 (pg/mL)",
+    x = NULL
+  )
+```
+
+**Interpretation**
+
+-   boxplot summarizes the distribution of IL-6 concentrations across patient observations using quartiles and the median
+-   line inside the box marks the median
+-   lower and upper box boundaries mark 𝑄1 and 𝑄3
+-   height of the box corresponds to the interquartile range
+-   points beyond the whiskers indicate outliers
+-   median IL-6 concentration is approximately 11.7 pg/mL, indicating the central location of the distribution
+-   interquartile range (IQR ≈ 12.3 pg/mL) : moderate spread among the central observations
+-   middle 50% of values lies between $Q_1 \approx 7.26$ pg/mL and $Q_3 \approx 19.5$ pg/mL, defining the primary concentration range
+:::
+
+------------------------------------------------------------------------
+
+### IL-6: Histogram to Probability
+
+::: {style="font-size:0.67em"}
+-   continuous biomarker such as IL-6 can be treated as a random variable:
+
+$$X=\text{IL-6 concentration [pg/mL]}$$
+
+probability helps answer:
+
+-   how likely are different IL-6 values?
+-   where is probability concentrated?
+-   how does probability change across the measurement scale?
+:::
+
+------------------------------------------------------------------------
+
+### IL-6: Histogram to Probability
+
+::: {style="font-size:0.67em"}
+-   histogram approximates how probability is distributed across intervals of IL-6
+
+    -   bar height reflects relative frequency, which approximates probability
+    -   dividing counts by total sample size converts counts into approximate probabilities
+
+**Interpretation**
+
+-   regions with taller bars correspond to higher probability density
+-   low bars in the right tail indicate low-probability
+-   total area across all bars corresponds to probability ≈ 1
+
+$$\text{∑relative frequencies≈1}$$
+:::
+
+------------------------------------------------------------------------
+
+### IL-6: Density as a Probability Model
+
+::: {style="font-size:0.67em"}
+-   density curve represents an estimate of the probability density function \[PDF\] of IL-6
+
+$$\text{f(x)=density at IL-6 value x}$$
+
+Key properties:
+
+-   $f(x)≥0$
+-   total area under the curve equals 1
+
+$$
+\int_{-\infty}^{\infty} f(x)\,dx = 1
+$$ Interpretation:
+
+-   height of the curve reflects relative likelihood of IL-6 values near x
+-   area under the curve over an interval gives probability
+
+Example:
+
+$$
+P(10 \le X \le 20) = \int_{10}^{20} f(x)\,dx
+$$ - value corresponds to the region where most IL-6 values are concentrated or the probability that X falls in the 10 to 20 interval
+:::
+
+------------------------------------------------------------------------
+
+### IL-6: Boxplot and Probability
+
+::: {style="font-size:0.67em"}
+-   boxplot summarizes probability using quantiles
+
+Quantiles partition probability:
+
+-   $Q_1$ : 25th percentile → 25% of observations fall below this value
+-   median: 50th percentile
+-   $Q_3$ : 75th percentile
+
+$$
+P(X \le Q_1) = 0.25, \quad P(X \le \text{Median}) = 0.5
+$$
+
+Interpretation for IL-6:
+
+-   middle 50% of probability lies between:
+
+$$7.26≤X≤19.5$$ - interval defines the highest-density region of the distribution
+
+Outliers:
+
+-   represent observations in low-probability regions
+-   often correspond to clinically extreme cases
+:::
+
+------------------------------------------------------------------------
+
+### Summary
+
+::: {style="font-size:0.67em"}
+descriptive features define how the sample should be understood before later modeling decisions are made
+
+plots and probabilities describing continuous variables help answer:
+
+-   `mean and median`: describe where the sample is centered\
+-   `standard deviation and IQR`: describe how widely values vary\
+-   `histograms and density plots`: describe shape and concentration across the scale\
+-   `boxplots`: describe ordered spread and tail extension\
+-   `interval probabilities`: describe the fraction of values occupying clinically meaningful ranges
+
+metrics help determine whether values are:
+
+-   approximately symmetric\
+-   right-skewed or left-skewed\
+-   tightly concentrated or broadly dispersed\
+-   characterized by extended tails or unusually large values
+:::
