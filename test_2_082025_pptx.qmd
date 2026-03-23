@@ -1,21 +1,16 @@
 ---
-title: "Describing Continuous Data Through Distribution and Probability"
+title: "Describing Continuous Data: Center, Spread, Shape, and Interval Probability"
 author: "<br><br><span style='font-size:25px;'><strong>Lesley Chapman Hannah, Ph.D., M.S.</strong></span><br>College of Graduate Studies<br>Northeast Ohio Medical University"
-format:
-  revealjs:
-    theme: simple
-    slide-number: true
-    chalkboard: true
-    transition: fade
-    incremental: false
-    width: 1400
-    height: 900
+
+  
+format: pptx
+
 execute:
   echo: true
   warning: false
   message: false
-editor: visual
 ---
+
 
 ```{r, echo=FALSE}
 library(tidyverse)
